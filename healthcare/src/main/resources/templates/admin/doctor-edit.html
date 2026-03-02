@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Edit Doctor</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header"><div class="sidebar-logo"><div class="logo-icon">🏥</div><span>Healthcare</span></div></div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/admin/dashboard}"><span class="nav-icon"></span><span>Dashboard</span></a></li>
+            <li><a th:href="@{/admin/appointments}"><span class="nav-icon"></span><span>Appointments</span></a></li>
+            <li><a th:href="@{/admin/doctors}" class="active"><span class="nav-icon"></span><span>Doctors</span></a></li>
+            <li><a th:href="@{/admin/patients}"><span class="nav-icon"></span><span>Patients</span></a></li>
+        </ul>
+        <div class="sidebar-footer"><form th:action="@{/logout}" method="post" style="margin:0;"><button type="submit" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:0.7rem;padding:0.75rem 1rem;color:#e74c3c;width:100%;font-size:0.9rem;border-radius:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(231,76,60,0.1)'" onmouseout="this.style.background='none'"><span>Logout</span></button></form></div>
+    </aside>
+    <div class="main-content">
+        <div class="topbar"><span class="topbar-title">Edit Doctor</span></div>
+        <div class="page-content">
+            <div class="page-header"><h1>Edit Doctor</h1></div>
+            <div class="form-card" style="max-width:700px;">
+                <form th:action="@{/admin/doctors/{id}/edit(id=${doctor.id})}" method="post">
+                    <div class="form-grid">
+                        <div class="field-group"><label>Full Name *</label><input type="text" name="name" th:value="${doctor.user.name}" required></div>
+                        <div class="field-group"><label>Email (read-only)</label><input type="email" th:value="${doctor.user.email}" disabled></div>
+                        <div class="field-group"><label>Phone</label><input type="text" name="phone" th:value="${doctor.user.phone}"></div>
+                        <div class="field-group"><label>Department</label><input type="text" name="department" th:value="${doctor.department}"></div>
+                        <div class="field-group"><label>Specialization</label><input type="text" name="specialization" th:value="${doctor.specialization}"></div>
+                        <div class="field-group"><label>Qualification</label><input type="text" name="qualification" th:value="${doctor.qualification}"></div>
+                        <div class="field-group"><label>Experience</label><input type="text" name="experience" th:value="${doctor.experience}"></div>
+                    </div>
+                    <div class="form-actions">
+                        <a th:href="@{/admin/doctors}" class="btn btn-outline">Cancel</a>
+                        <button type="submit" class="btn btn-teal">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

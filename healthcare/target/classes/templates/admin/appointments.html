@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Appointments - Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo"><div class="logo-icon">🏥</div><span>Healthcare</span></div>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/admin/dashboard}"><span class="nav-icon"></span><span>Dashboard</span></a></li>
+            <li><a th:href="@{/admin/appointments}" class="active"><span class="nav-icon"></span><span>Appointments</span></a></li>
+            <li><a th:href="@{/admin/doctors}"><span class="nav-icon"></span><span>Doctors</span></a></li>
+            <li><a th:href="@{/admin/patients}"><span class="nav-icon"></span><span>Patients</span></a></li>
+        </ul>
+        <div class="sidebar-footer"><form th:action="@{/logout}" method="post" style="margin:0;"><button type="submit" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:0.7rem;padding:0.75rem 1rem;color:#e74c3c;width:100%;font-size:0.9rem;border-radius:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(231,76,60,0.1)'" onmouseout="this.style.background='none'"><span>Logout</span></button></form></div>
+    </aside>
+
+    <div class="main-content">
+        <div class="topbar">
+            <span class="topbar-title">Appointments</span>
+        </div>
+        <div class="page-content">
+            <div th:if="${success}" class="alert alert-success"><span th:text="${success}"></span></div>
+
+            <div class="page-header">
+                <h1>Appointments</h1>
+                <p>Manage all patient appointments</p>
+            </div>
+
+            <!-- TOOLBAR -->
+            <form th:action="@{/admin/appointments}" method="get">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <span class="search-icon"></span>
+                        <input type="text" name="search" placeholder="Search by patient or doctor..."
+                               th:value="${search}">
+                    </div>
+                    <input type="date" name="date" class="filter-input" th:value="${date}">
+                    <select name="doctorId" class="filter-select">
+                        <option value="">All Doctors</option>
+                        <option th:each="d : ${doctors}" th:value="${d.id}" th:text="'Dr. ' + ${d.user.name}"></option>
+                    </select>
+                    <select name="patientId" class="filter-select">
+                        <option value="">All Patients</option>
+                        <option th:each="p : ${patients}" th:value="${p.id}" th:text="${p.user.name}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-outline">Filter</button>
+                    <a th:href="@{/admin/appointments}" class="btn btn-outline">Clear</a>
+                    <div class="toolbar-right">
+                        <a th:href="@{/admin/appointments/create}" class="btn btn-teal">Create Appointment</a>
+                    </div>
+                </div>
+            </form>
+
+            <!-- TABLE -->
+            <div class="card">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Department</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Symptoms</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(appointments)}">
+                                <td colspan="9">
+                                    <div class="empty-state"><div class="empty-icon">📅</div><p>No appointments found.</p></div>
+                                </td>
+                            </tr>
+                            <tr th:each="apt, stat : ${appointments}">
+                                <td th:text="${stat.count}">1</td>
+                                <td th:text="${apt.patient.user.name}">Patient</td>
+                                <td th:text="'Dr. ' + ${apt.doctor.user.name}">Doctor</td>
+                                <td th:text="${apt.doctor.department}">Dept</td>
+                                <td th:text="${apt.appointmentDate}">Date</td>
+                                <td th:text="${apt.appointmentTime != null ? apt.appointmentTime : '-'}">Time</td>
+                                <td th:text="${apt.symptoms != null ? apt.symptoms : '-'}">-</td>
+                                <td>
+                                    <span th:class="'badge badge-' + ${apt.status.name().toLowerCase()}"
+                                          th:text="${apt.status}">PENDING</span>
+                                </td>
+                                <td>
+                                    <div class="action-btns">
+                                        <form th:action="@{/admin/appointments/{id}/status(id=${apt.id})}" method="post">
+                                            <select name="status" class="status-select" onchange="this.form.submit()">
+                                                <option value="PENDING" th:selected="${apt.status.name() == 'PENDING'}">Pending</option>
+                                                <option value="APPROVED" th:selected="${apt.status.name() == 'APPROVED'}">Approved</option>
+                                                <option value="COMPLETED" th:selected="${apt.status.name() == 'COMPLETED'}">Completed</option>
+                                            </select>
+                                        </form>
+                                        <form th:action="@{/admin/appointments/{id}/delete(id=${apt.id})}" method="post"
+                                              onsubmit="return confirm('Delete this appointment?')">
+                                            <button type="submit" class="btn btn-danger btn-sm">🗑</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

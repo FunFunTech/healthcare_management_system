@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Healthcare</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="auth-page">
+    <div class="auth-card" style="max-width:480px;">
+        <h2>🏥 Create Account</h2>
+        <p class="subtitle">Register to get started</p>
+
+        <div th:if="${error}" class="alert alert-error">❌ <span th:text="${error}"></span></div>
+        <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
+
+        <form th:action="@{/register}" method="post">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="name" placeholder="Your full name" required>
+            </div>
+            <div class="form-group" style="margin-top:0.75rem;">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="Your email" required>
+            </div>
+            <div class="form-group" style="margin-top:0.75rem;">
+                <label>Phone Number</label>
+                <input type="text" name="phone" placeholder="Your phone number">
+            </div>
+            <div class="form-group" style="margin-top:0.75rem;">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Create a password" required>
+            </div>
+            <div class="form-group" style="margin-top:0.75rem;">
+                <label>Register as</label>
+                <select name="role" required>
+                    <option value="">-- Select Role --</option>
+                    <option value="PATIENT">Patient</option>
+                    <option value="DOCTOR">Doctor</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary" style="margin-top:1.25rem;">Create Account</button>
+        </form>
+
+        <div class="auth-link">
+            Already have an account? <a href="/login">Login here</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

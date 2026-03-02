@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>My Records - Patient</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header"><div class="sidebar-logo"><div class="logo-icon">🏥</div><span>Healthcare</span></div></div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/patient/dashboard}"><span class="nav-icon"></span><span>Dashboard</span></a></li>
+            <li><a th:href="@{/patient/appointments}"><span class="nav-icon"></span><span>Appointments</span></a></li>
+            <li><a th:href="@{/patient/records}" class="active"><span class="nav-icon"></span><span>My Records</span></a></li>
+            <li><a th:href="@{/patient/medications}"><span class="nav-icon"></span><span>Medications</span></a></li>
+            <li><a th:href="@{/patient/profile}"><span class="nav-icon"></span><span>Profile</span></a></li>
+        </ul>
+        <div class="sidebar-footer"><form th:action="@{/logout}" method="post" style="margin:0;"><button type="submit" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:0.7rem;padding:0.75rem 1rem;color:#e74c3c;width:100%;font-size:0.9rem;border-radius:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(231,76,60,0.1)'" onmouseout="this.style.background='none'"><span>Logout</span></button></form></div>
+    </aside>
+    <div class="main-content">
+        <div class="topbar"><span class="topbar-title">My Medical Records</span></div>
+        <div class="page-content">
+            <div class="page-header">
+                <h1>My Medical Records</h1>
+                <div style="display:flex;justify-content:flex-end;">
+                    <a th:href="@{/patient/records/download}" class="btn btn-success">Download Full Report (PDF)</a>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(records)}">
+                <div class="empty-state card" style="padding:3rem;">
+                    <div class="empty-icon">📋</div>
+                    <p>No medical records found. They will appear here after your doctor adds them.</p>
+                </div>
+            </div>
+
+            <!-- Records List -->
+            <div th:each="rec : ${records}" class="card" style="margin-bottom:1.25rem;">
+                <div class="card-header">
+                    <div>
+                        <strong>📅 <span th:text="${rec.recordDate}">Date</span></strong>
+                        <span style="color:var(--text-muted);margin-left:0.75rem;">Dr. <span th:text="${rec.doctor.user.name}">Doctor</span></span>
+                        <span th:if="${rec.doctor.department != null}" style="color:var(--text-muted);">
+                            · <span th:text="${rec.doctor.department}">Dept</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div>
+                            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.25rem;">BLOOD PRESSURE</p>
+                            <p style="font-weight:600;" th:text="${rec.bloodPressure != null ? rec.bloodPressure : 'N/A'}">-</p>
+                        </div>
+                        <div>
+                            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.25rem;">SUGAR LEVEL</p>
+                            <p style="font-weight:600;" th:text="${rec.sugarLevel != null ? rec.sugarLevel : 'N/A'}">-</p>
+                        </div>
+                        <div>
+                            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.25rem;">WEIGHT</p>
+                            <p style="font-weight:600;" th:text="${rec.weight != null ? rec.weight : 'N/A'}">-</p>
+                        </div>
+                        <div>
+                            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.25rem;">TEMPERATURE</p>
+                            <p style="font-weight:600;" th:text="${rec.temperature != null ? rec.temperature : 'N/A'}">-</p>
+                        </div>
+                        <div>
+                            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.25rem;">HEART RATE</p>
+                            <p style="font-weight:600;" th:text="${rec.heartRate != null ? rec.heartRate : 'N/A'}">-</p>
+                        </div>
+                    </div>
+
+                    <div th:if="${rec.diagnosis != null and !#strings.isEmpty(rec.diagnosis)}" style="margin-top:1rem;">
+                        <p style="font-size:0.8rem;color:var(--text-muted);">DIAGNOSIS</p>
+                        <p th:text="${rec.diagnosis}">-</p>
+                    </div>
+                    <div th:if="${rec.tests != null and !#strings.isEmpty(rec.tests)}" style="margin-top:0.75rem;">
+                        <p style="font-size:0.8rem;color:var(--text-muted);">TESTS</p>
+                        <p th:text="${rec.tests}">-</p>
+                    </div>
+                    <div th:if="${rec.notes != null and !#strings.isEmpty(rec.notes)}" style="margin-top:0.75rem;">
+                        <p style="font-size:0.8rem;color:var(--text-muted);">NOTES</p>
+                        <p th:text="${rec.notes}">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

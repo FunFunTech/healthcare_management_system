@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a class="navbar-brand" href="/">Healthcare</a>
+    <ul class="navbar-nav">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="/login" class="btn-login">Login</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+    <div>
+        <h1>Healthcare Management System</h1>
+        <p>Advanced Medical Solutions for Better Tomorrow</p>
+        <a href="#about" class="btn-hero">Learn More</a>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section about-section" id="about">
+    <h2 class="section-title">About Us</h2>
+    <p>Our Healthcare Management System is designed to simplify and digitalize hospital operations. We provide
+        an integrated platform that connects patients, doctors, and administrators in one secure system.</p>
+    <p>From appointment scheduling and patient record management to lab reports and billing, our solution
+        ensures efficiency, accuracy, and data security. Our mission is to enhance healthcare delivery through
+        smart digital solutions.</p>
+</section>
+
+<!-- SERVICES -->
+<section class="section services-section" id="services">
+    <h2 class="section-title">Our Services</h2>
+
+    <div class="service-item">
+        <div class="service-icon">🏥</div>
+        <div class="service-content">
+            <h3>Patient Management</h3>
+            <p>Manage patient information, medical history, prescriptions, and reports in a centralized and
+                secure system. Improve hospital workflow and reduce paperwork.</p>
+        </div>
+    </div>
+
+    <div class="service-item reverse">
+        <div class="service-icon">📅</div>
+        <div class="service-content">
+            <h3>Doctor Appointment</h3>
+            <p>Allow patients to book appointments online. Doctors can manage schedules efficiently and
+                reduce waiting time.</p>
+        </div>
+    </div>
+
+    <div class="service-item">
+        <div class="service-icon">📋</div>
+        <div class="service-content">
+            <h3>Medical Records</h3>
+            <p>Secure digital storage of medical records ensures quick access and data safety while
+                maintaining privacy standards.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section contact-section" id="contact">
+    <h2 class="section-title">Contact Us</h2>
+
+    <div th:if="${success}" class="alert alert-success contact-form"><span th:text="${success}"></span></div>
+
+    <form class="contact-form" th:action="@{/contact}" method="post">
+        <div class="form-group">
+            <input type="text" name="name" placeholder="Your Name" required>
+        </div>
+        <div class="form-group">
+            <input type="email" name="email" placeholder="Your Email" required>
+        </div>
+        <div class="form-group">
+            <textarea name="message" placeholder="Your Message" required></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Send Message</button>
+    </form>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <p>© 2026 Healthcare Management System</p>
+</footer>
+
+</body>
+</html>

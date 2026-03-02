@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header"><div class="sidebar-logo"><div class="logo-icon">🏥</div><span>Healthcare</span></div></div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/doctor/dashboard}" class="active"><span class="nav-icon"></span><span>Dashboard</span></a></li>
+            <li><a th:href="@{/doctor/appointments}"><span class="nav-icon"></span><span>Appointments</span></a></li>
+            <li><a th:href="@{/doctor/records}"><span class="nav-icon"></span><span>Records</span></a></li>
+            <li><a th:href="@{/doctor/medications}"><span class="nav-icon"></span><span>Medication</span></a></li>
+        </ul>
+        <div class="sidebar-footer"><form th:action="@{/logout}" method="post" style="margin:0;"><button type="submit" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:0.7rem;padding:0.75rem 1rem;color:#e74c3c;width:100%;font-size:0.9rem;border-radius:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(231,76,60,0.1)'" onmouseout="this.style.background='none'"><span>Logout</span></button></form></div>
+    </aside>
+
+    <div class="main-content">
+        <div class="topbar">
+            <span class="topbar-title">Doctor Dashboard</span>
+            <div class="topbar-user">
+                <div class="user-avatar" th:text="${doctor.user.name.substring(0,1)}">D</div>
+                <span th:text="'Dr. ' + ${doctor.user.name}">Doctor</span>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
+            <div class="page-header">
+                <h1>Welcome, Dr. <span th:text="${doctor.user.name}">Doctor</span>!</h1>
+                <p>Here's your overview for today.</p>
+            </div>
+
+            <!-- STAT CARDS -->
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <div class="stat-icon teal">📅</div>
+                    <div class="stat-info">
+                        <div class="stat-value" th:text="${todayCount}">0</div>
+                        <div class="stat-label">Today's Appointments</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">🧑‍🤝‍🧑</div>
+                    <div class="stat-info">
+                        <div class="stat-value" th:text="${totalPatients}">0</div>
+                        <div class="stat-label">Total Appointments</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN GRID -->
+            <div class="grid-sidebar" style="margin-bottom:1.5rem;">
+                <!-- LEFT: Profile + Calendar -->
+                <div style="display:flex;flex-direction:column;gap:1.25rem;">
+                    <!-- Profile -->
+                    <div class="profile-card">
+                        <div class="profile-avatar" th:text="${doctor.user.name.substring(0,1)}">D</div>
+                        <div class="profile-name" th:text="'Dr. ' + ${doctor.user.name}">Doctor</div>
+                        <div class="profile-dept" th:text="${doctor.department != null ? doctor.department : 'General'}">Department</div>
+                        <div class="profile-info">
+                            <div class="profile-info-item">
+                                <span class="label">Email</span>
+                                <span class="value" th:text="${doctor.user.email}">email</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="label">Phone</span>
+                                <span class="value" th:text="${doctor.user.phone != null ? doctor.user.phone : '-'}">-</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="label">Specialization</span>
+                                <span class="value" th:text="${doctor.specialization != null ? doctor.specialization : '-'}">-</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="label">Qualification</span>
+                                <span class="value" th:text="${doctor.qualification != null ? doctor.qualification : '-'}">-</span>
+                            </div>
+                            <div class="profile-info-item">
+                                <span class="label">Experience</span>
+                                <span class="value" th:text="${doctor.experience != null ? doctor.experience : '-'}">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar -->
+                    <div class="calendar-section">
+                        <div class="calendar-header">
+                            <h4>Mark Off Days</h4>
+                        </div>
+                        <div id="calendar" class="calendar-grid"></div>
+                        <div style="margin-top:1rem;">
+                            <form th:action="@{/doctor/off-days/add}" method="post" style="display:flex;gap:0.5rem;">
+                                <input type="date" name="date" class="filter-input" style="flex:1;" required>
+                                <button type="submit" class="btn btn-danger btn-sm">Mark Off</button>
+                            </form>
+                            <div th:if="${!#sets.isEmpty(offDays)}" style="margin-top:0.75rem;">
+                                <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.5rem;">Off Days:</p>
+                                <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+                                    <form th:each="day : ${offDays}"
+                                          th:action="@{/doctor/off-days/remove}" method="post"
+                                          style="display:inline;">
+                                        <input type="hidden" name="date" th:value="${day}">
+                                        <button type="submit" style="background:#fde8e8;border:none;color:var(--danger);padding:0.25rem 0.6rem;border-radius:4px;font-size:0.78rem;cursor:pointer;">
+                                            ✕ <span th:text="${day}"></span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Chart + Today's Table -->
+                <div style="display:flex;flex-direction:column;gap:1.25rem;">
+                    <!-- Chart -->
+                    <div class="card">
+                        <div class="card-header"><h3>Appointments by Day</h3></div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="appointmentChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Appointments -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Today's Appointments</h3>
+                            <a th:href="@{/doctor/appointments}" class="btn btn-teal btn-sm">View All</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr><th>#</th><th>Patient</th><th>Time</th><th>Symptoms</th><th>Status</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${#lists.isEmpty(todayAppointments)}">
+                                        <td colspan="5" style="text-align:center;color:var(--text-muted);padding:1.5rem;">No appointments today.</td>
+                                    </tr>
+                                    <tr th:each="apt, stat : ${todayAppointments}">
+                                        <td th:text="${stat.count}">1</td>
+                                        <td th:text="${apt.patient.user.name}">Patient</td>
+                                        <td th:text="${apt.appointmentTime != null ? apt.appointmentTime : '-'}">-</td>
+                                        <td th:text="${apt.symptoms != null ? apt.symptoms : '-'}">-</td>
+                                        <td><span th:class="'badge badge-' + ${apt.status.name().toLowerCase()}" th:text="${apt.status}">-</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const ctx = document.getElementById('appointmentChart').getContext('2d');
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: /*[[${chartLabels}]]*/ [],
+        datasets: [{
+            label: 'Appointments',
+            data: /*[[${chartValues}]]*/ [],
+            backgroundColor: 'rgba(44, 160, 144, 0.6)',
+            borderColor: 'rgba(44, 160, 144, 1)',
+            borderWidth: 1,
+            borderRadius: 5
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+        }
+    }
+});
+</script>
+</body>
+</html>

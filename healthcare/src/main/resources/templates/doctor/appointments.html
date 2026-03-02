@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Appointments - Doctor</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header"><div class="sidebar-logo"><div class="logo-icon">🏥</div><span>Healthcare</span></div></div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/doctor/dashboard}"><span class="nav-icon"></span><span>Dashboard</span></a></li>
+            <li><a th:href="@{/doctor/appointments}" class="active"><span class="nav-icon"></span><span>Appointments</span></a></li>
+            <li><a th:href="@{/doctor/records}"><span class="nav-icon"></span><span>Records</span></a></li>
+            <li><a th:href="@{/doctor/medications}"><span class="nav-icon"></span><span>Medication</span></a></li>
+        </ul>
+        <div class="sidebar-footer"><form th:action="@{/logout}" method="post" style="margin:0;"><button type="submit" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:0.7rem;padding:0.75rem 1rem;color:#e74c3c;width:100%;font-size:0.9rem;border-radius:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(231,76,60,0.1)'" onmouseout="this.style.background='none'"><span>Logout</span></button></form></div>
+    </aside>
+
+    <div class="main-content">
+        <div class="topbar"><span class="topbar-title">My Appointments</span></div>
+        <div class="page-content">
+            <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
+
+            <div class="page-header"><h1>My Appointments</h1><p>View and manage your appointments</p></div>
+
+            <form th:action="@{/doctor/appointments}" method="get">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" name="search" placeholder="Search by patient name..." th:value="${search}">
+                    </div>
+                    <input type="date" name="date" class="filter-input" th:value="${date}">
+                    <button type="submit" class="btn btn-outline">Filter</button>
+                    <a th:href="@{/doctor/appointments}" class="btn btn-outline">Clear</a>
+                    <div class="toolbar-right">
+                        <a th:href="@{/doctor/appointments/create}" class="btn btn-teal">Create Appointment</a>
+                    </div>
+                </div>
+            </form>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>#</th><th>Patient</th><th>Date</th><th>Time</th><th>Symptoms</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(appointments)}">
+                                <td colspan="6"><div class="empty-state"><div class="empty-icon">📅</div><p>No appointments found.</p></div></td>
+                            </tr>
+                            <tr th:each="apt, stat : ${appointments}">
+                                <td th:text="${stat.count}">1</td>
+                                <td th:text="${apt.patient.user.name}">Patient</td>
+                                <td th:text="${apt.appointmentDate}">Date</td>
+                                <td th:text="${apt.appointmentTime != null ? apt.appointmentTime : '-'}">-</td>
+                                <td th:text="${apt.symptoms != null ? apt.symptoms : '-'}">-</td>
+                                <td>
+                                    <span th:class="'badge badge-' + ${apt.status.name().toLowerCase()}"
+                                          th:text="${apt.status}">Status</span>
+                                    <span th:if="${apt.status.name() == 'PENDING'}"
+                                          style="font-size:0.75rem;color:var(--text-muted);margin-left:0.4rem;">(Awaiting admin approval)</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

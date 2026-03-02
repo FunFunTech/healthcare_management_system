@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Appointment - Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo"><div class="logo-icon">🏥</div><span>Healthcare</span></div>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/admin/dashboard}"><span class="nav-icon"></span><span>Dashboard</span></a></li>
+            <li><a th:href="@{/admin/appointments}" class="active"><span class="nav-icon"></span><span>Appointments</span></a></li>
+            <li><a th:href="@{/admin/doctors}"><span class="nav-icon"></span><span>Doctors</span></a></li>
+            <li><a th:href="@{/admin/patients}"><span class="nav-icon"></span><span>Patients</span></a></li>
+        </ul>
+        <div class="sidebar-footer"><form th:action="@{/logout}" method="post" style="margin:0;"><button type="submit" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:0.7rem;padding:0.75rem 1rem;color:#e74c3c;width:100%;font-size:0.9rem;border-radius:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(231,76,60,0.1)'" onmouseout="this.style.background='none'"><span>Logout</span></button></form></div>
+    </aside>
+
+    <div class="main-content">
+        <div class="topbar">
+            <span class="topbar-title">Create Appointment</span>
+        </div>
+        <div class="page-content">
+            <div class="page-header">
+                <h1>Create New Appointment</h1>
+                <p>Fill in the details to schedule an appointment</p>
+            </div>
+
+            <div class="form-card" style="max-width:700px;">
+                <form th:action="@{/admin/appointments/create}" method="post">
+                    <div class="form-grid">
+                        <div class="field-group">
+                            <label>Patient *</label>
+                            <select name="patientId" required>
+                                <option value="">-- Select Patient --</option>
+                                <option th:each="p : ${patients}" th:value="${p.id}" th:text="${p.user.name} + ' (' + ${p.user.email} + ')'"></option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label>Doctor *</label>
+                            <select name="doctorId" required>
+                                <option value="">-- Select Doctor --</option>
+                                <option th:each="d : ${doctors}" th:value="${d.id}"
+                                        th:text="'Dr. ' + ${d.user.name} + ' - ' + ${d.department}"></option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label>Appointment Date *</label>
+                            <input type="date" name="appointmentDate" required>
+                        </div>
+                        <div class="field-group">
+                            <label>Appointment Time</label>
+                            <input type="time" name="appointmentTime">
+                        </div>
+                        <div class="field-group form-full">
+                            <label>Symptoms / Reason</label>
+                            <textarea name="symptoms" placeholder="Describe symptoms or reason for visit..."></textarea>
+                        </div>
+                        <div class="field-group form-full">
+                            <label>Additional Notes</label>
+                            <textarea name="notes" placeholder="Any additional notes..."></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <a th:href="@{/admin/appointments}" class="btn btn-outline">Cancel</a>
+                        <button type="submit" class="btn btn-teal"> Create Appointment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

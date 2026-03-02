@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Medications - Patient</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header"><div class="sidebar-logo"><div class="logo-icon">🏥</div><span>Healthcare</span></div></div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/patient/dashboard}"><span class="nav-icon"></span><span>Dashboard</span></a></li>
+            <li><a th:href="@{/patient/appointments}"><span class="nav-icon"></span><span>Appointments</span></a></li>
+            <li><a th:href="@{/patient/records}"><span class="nav-icon"></span><span>My Records</span></a></li>
+            <li><a th:href="@{/patient/medications}" class="active"><span class="nav-icon"></span><span>Medications</span></a></li>
+            <li><a th:href="@{/patient/profile}"><span class="nav-icon"></span><span>Profile</span></a></li>
+        </ul>
+        <div class="sidebar-footer"><form th:action="@{/logout}" method="post" style="margin:0;"><button type="submit" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:0.7rem;padding:0.75rem 1rem;color:#e74c3c;width:100%;font-size:0.9rem;border-radius:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(231,76,60,0.1)'" onmouseout="this.style.background='none'"><span>Logout</span></button></form></div>
+    </aside>
+    <div class="main-content">
+        <div class="topbar"><span class="topbar-title">My Medications</span></div>
+        <div class="page-content">
+            <div class="page-header"><h1>My Medications</h1><p>All prescribed medicines</p></div>
+
+            <!-- Active -->
+            <div class="card" style="margin-bottom:1.5rem;">
+                <div class="card-header"><h3>Currently Active Medications</h3></div>
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>Medicine</th><th>Dosage</th><th>Frequency</th><th>Duration</th><th>Prescribed By</th><th>Instructions</th><th>End Date</th></tr></thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(activeMedications)}">
+                                <td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">No active medications.</td>
+                            </tr>
+                            <tr th:each="med : ${activeMedications}">
+                                <td><strong th:text="${med.medicineName}">Medicine</strong></td>
+                                <td th:text="${med.dosage != null ? med.dosage : '-'}">-</td>
+                                <td th:text="${med.frequency != null ? med.frequency : '-'}">-</td>
+                                <td th:text="${med.duration != null ? med.duration : '-'}">-</td>
+                                <td th:text="'Dr. ' + ${med.doctor.user.name}">Doctor</td>
+                                <td th:text="${med.instructions != null ? med.instructions : '-'}">-</td>
+                                <td th:text="${med.endDate != null ? med.endDate : '-'}">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- All History -->
+            <div class="card">
+                <div class="card-header"><h3>🕒 Medication History</h3></div>
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>Medicine</th><th>Prescribed Date</th><th>By</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr th:each="med : ${allMedications}">
+                                <td th:text="${med.medicineName}">Medicine</td>
+                                <td th:text="${med.prescribedDate}">Date</td>
+                                <td th:text="'Dr. ' + ${med.doctor.user.name}">Doctor</td>
+                                <td>
+                                    <span th:class="${med.active} ? 'badge badge-active' : 'badge badge-inactive'"
+                                          th:text="${med.active} ? 'Active' : 'Stopped'">Status</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Book Appointment</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header"><div class="sidebar-logo"><div class="logo-icon">🏥</div><span>Healthcare</span></div></div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/patient/dashboard}"><span class="nav-icon"></span><span>Dashboard</span></a></li>
+            <li><a th:href="@{/patient/appointments}" class="active"><span class="nav-icon"></span><span>Appointments</span></a></li>
+            <li><a th:href="@{/patient/records}"><span class="nav-icon"></span><span>My Records</span></a></li>
+            <li><a th:href="@{/patient/medications}"><span class="nav-icon"></span><span>Medications</span></a></li>
+            <li><a th:href="@{/patient/profile}"><span class="nav-icon"></span><span>Profile</span></a></li>
+        </ul>
+        <div class="sidebar-footer"><form th:action="@{/logout}" method="post" style="margin:0;"><button type="submit" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:0.7rem;padding:0.75rem 1rem;color:#e74c3c;width:100%;font-size:0.9rem;border-radius:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(231,76,60,0.1)'" onmouseout="this.style.background='none'"><span>Logout</span></button></form></div>
+    </aside>
+    <div class="main-content">
+        <div class="topbar"><span class="topbar-title">Book Appointment</span></div>
+        <div class="page-content">
+            <div class="page-header"><h1>Book an Appointment</h1></div>
+            <div class="alert alert-info">Your appointment will be reviewed and approved by the admin.</div>
+            <div class="form-card" style="max-width:600px;">
+                <form th:action="@{/patient/appointments/book}" method="post">
+                    <div class="form-grid">
+                        <div class="field-group form-full">
+                            <label>Choose Doctor *</label>
+                            <select name="doctorId" required>
+                                <option value="">-- Select Doctor --</option>
+                                <option th:each="d : ${doctors}" th:value="${d.id}"
+                                        th:text="'Dr. ' + ${d.user.name} + (${d.department != null ? ' (' + d.department + ')' : ''})"></option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label>Preferred Date *</label>
+                            <input type="date" name="appointmentDate" required>
+                        </div>
+                        <div class="field-group">
+                            <label>Preferred Time</label>
+                            <input type="time" name="appointmentTime">
+                        </div>
+                        <div class="field-group form-full">
+                            <label>Symptoms / Reason for Visit</label>
+                            <textarea name="symptoms" placeholder="Describe your symptoms or reason for the visit..."></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <a th:href="@{/patient/appointments}" class="btn btn-outline">Cancel</a>
+                        <button type="submit" class="btn btn-teal">Book Appointment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

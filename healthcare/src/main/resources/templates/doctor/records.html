@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Records - Doctor</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body>
+<div class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header"><div class="sidebar-logo"><div class="logo-icon">🏥</div><span>Healthcare</span></div></div>
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/doctor/dashboard}"><span class="nav-icon"></span><span>Dashboard</span></a></li>
+            <li><a th:href="@{/doctor/appointments}"><span class="nav-icon"></span><span>Appointments</span></a></li>
+            <li><a th:href="@{/doctor/records}" class="active"><span class="nav-icon"></span><span>Records</span></a></li>
+            <li><a th:href="@{/doctor/medications}"><span class="nav-icon"></span><span>Medication</span></a></li>
+        </ul>
+        <div class="sidebar-footer"><form th:action="@{/logout}" method="post" style="margin:0;"><button type="submit" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:0.7rem;padding:0.75rem 1rem;color:#e74c3c;width:100%;font-size:0.9rem;border-radius:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(231,76,60,0.1)'" onmouseout="this.style.background='none'"><span>Logout</span></button></form></div>
+    </aside>
+
+    <div class="main-content">
+        <div class="topbar"><span class="topbar-title">Patient Records</span></div>
+        <div class="page-content">
+            <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
+            <div class="page-header"><h1>Patient Records</h1><p>Medical records for your patients only</p></div>
+
+            <form th:action="@{/doctor/records}" method="get">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <span class="search-icon"></span>
+                        <input type="text" name="search" placeholder="Search by patient name or ID..." th:value="${search}">
+                    </div>
+                    <button type="submit" class="btn btn-outline">Search</button>
+                    <a th:href="@{/doctor/records}" class="btn btn-outline">Clear</a>
+                    <div class="toolbar-right">
+                        <a th:href="@{/doctor/records/create}" class="btn btn-teal">Add Record</a>
+                    </div>
+                </div>
+            </form>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th><th>Patient</th><th>Date</th><th>BP</th><th>Sugar</th>
+                                <th>Diagnosis</th><th>Download</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(records)}">
+                                <td colspan="7"><div class="empty-state"><div class="empty-icon">📋</div><p>No records found.</p></div></td>
+                            </tr>
+                            <tr th:each="rec, stat : ${records}">
+                                <td th:text="${stat.count}">1</td>
+                                <td>
+                                    <div>
+                                        <div th:text="${rec.patient.user.name}" style="font-weight:600;">Patient</div>
+                                        <div th:text="'ID: P-' + ${rec.patient.id}" style="font-size:0.78rem;color:var(--text-muted);">-</div>
+                                    </div>
+                                </td>
+                                <td th:text="${rec.recordDate}">Date</td>
+                                <td th:text="${rec.bloodPressure != null ? rec.bloodPressure : '-'}">-</td>
+                                <td th:text="${rec.sugarLevel != null ? rec.sugarLevel : '-'}">-</td>
+                                <td th:text="${rec.diagnosis != null ? rec.diagnosis : '-'}">-</td>
+                                <td>
+                                    <a th:href="@{/doctor/records/{id}/download(id=${rec.patient.id})}"
+                                       class="btn btn-success btn-sm">PDF</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
